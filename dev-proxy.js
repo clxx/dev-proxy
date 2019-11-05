@@ -1,5 +1,9 @@
-// npm i crypto-random-string
-// npm i http-proxy
+/*
+
+npm i crypto-random-string
+npm i http-proxy
+
+*/
 
 const { execSync } = require('child_process');
 const fs = require('fs');
@@ -7,16 +11,21 @@ const fs = require('fs');
 const cryptoRandomString = require('crypto-random-string');
 const httpProxy = require('http-proxy');
 
-const passphrase = cryptoRandomString({length: 16});
+const command = 'dotnet dev-certs https';
 
-execSync('dotnet dev-certs https -t');
+execSync(`${command} -t`);
+
 // Cf. https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener
-execSync(`dotnet dev-certs https -ep dev-cert.pfx -p ${passphrase}`);
+const path = 'dev-cert.pfx';
+const passphrase = cryptoRandomString({length: 16});
+execSync(`${command} -ep ${path} -p ${passphrase}`);
+const pfx = fs.readFileSync(path);
+fs.unlinkSync(path);
 
 httpProxy.createProxyServer({
   target: 'http://localhost:80',
   ssl: {
-    pfx: fs.readFileSync('dev-cert.pfx'),
+    pfx,
     passphrase
   },
   xfwd: true
