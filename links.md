@@ -1,4 +1,4 @@
-# Open Source Servers
+# Open Source Proxies
 
 * <https://caddyserver.com/>
 * <http://www.haproxy.org/> and <https://www.haproxy.com/>
